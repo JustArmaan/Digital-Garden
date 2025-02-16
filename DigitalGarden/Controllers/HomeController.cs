@@ -23,7 +23,11 @@ public class HomeController : Controller
         return View();
     }
 
-public IActionResult MyPlants()
+    public IActionResult MyPlants()
+    {
+        return View();
+    }
+       public IActionResult AddPlants()
     {
         return View();
     }
