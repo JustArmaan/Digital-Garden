@@ -27,10 +27,25 @@ public class HomeController : Controller
     {
         return View();
     }
-       public IActionResult AddPlants()
+    public IActionResult AddPlants()
     {
         return View();
     }
+    public IActionResult CareLog()
+    {
+        return View();
+    }
+
+    public IActionResult CommunityTips()
+    {
+        return View();
+    }
+
+    public IActionResult Profile()
+    {
+        return View();
+    }
+
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {
