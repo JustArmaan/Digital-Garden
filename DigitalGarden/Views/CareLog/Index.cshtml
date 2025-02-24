@@ -1,9 +1,15 @@
+@model IEnumerable<MVCView.Models.CareLog>
+
+@{
+    ViewData["Title"] = "Care Log - Digital Garden";
+}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Care Log - Digital Garden</title>
+    <title>@ViewData["Title"]</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-QWTKZyjpPEjISg8tZMkFsaE04Afd2u9I6BNc5c8dFuPYGemfc2B26v7z6k2Jpsl5" crossorigin="anonymous">
 </head>
@@ -14,43 +20,31 @@
             <h2 class="text-success text-center fw-bold">🌿 Plant Care Log</h2>
             <p class="text-center text-muted">Track your plant care activities with ease.</p>
 
-            <!-- Log Entries -->
             <div class="list-group mb-4">
-                <div class="list-group-item d-flex align-items-center">
-                    <img src="https://frondlyplants.com/cdn/shop/files/Monstera_Deliciosa_XL.jpg?v=1739217493"
-                         class="rounded me-3" width="60" height="60" alt="Monstera">
-                    <div>
-                        <p class="fw-semibold mb-1">Watered Monstera</p>
-                        <small class="text-muted">February 10, 2025 - 10:00 AM</small>
+                @foreach (var entry in Model)
+                {
+                    <div class="list-group-item d-flex align-items-center">
+                        <img src="@entry.Plant.ImageUrl" class="rounded me-3" width="60" height="60" alt="@entry.Plant.Name">
+                        <div>
+                            <p class="fw-semibold mb-1">@entry.CareType @entry.Plant.Name</p>
+                            <small class="text-muted">@entry.Date.ToString("MMMM dd, yyyy - hh:mm tt")</small>
+                            <p class="text-muted">@entry.Notes</p>
+                        </div>
                     </div>
-                </div>
-
-                <div class="list-group-item d-flex align-items-center">
-                    <img src="https://cdn.mos.cms.futurecdn.net/pNug7bBksRVsL54EEE5Wu9.jpg"
-                         class="rounded me-3" width="60" height="60" alt="Snake Plant">
-                    <div>
-                        <p class="fw-semibold mb-1">Added fertilizer to Snake Plant</p>
-                        <small class="text-muted">February 8, 2025 - 3:45 PM</small>
-                    </div>
-                </div>
-
-                <div class="list-group-item d-flex align-items-center">
-                    <img src="https://www.meadowsfarms.com/great-big-greenhouse-gardening-blog/wp-content/uploads/sites/2/2023/02/doug-blog-aloe-vera.jpg.webp"
-                         class="rounded me-3" width="60" height="60" alt="Aloe Vera">
-                    <div>
-                        <p class="fw-semibold mb-1">Rotated Aloe Vera for even sunlight</p>
-                        <small class="text-muted">February 6, 2025 - 9:30 AM</small>
-                    </div>
-                </div>
+                }
             </div>
 
-            <!-- Add New Log Entry -->
             <div class="bg-light p-4 rounded">
                 <h4 class="text-muted text-center">Add a New Care Entry</h4>
-                <form action="submit_care_log.php" method="POST">
+                <form action="@Url.Action("AddCareLog", "CareLog")" method="POST">
                     <div class="mb-3">
-                        <label for="plantName" class="form-label">Plant Name</label>
-                        <input type="text" id="plantName" name="plantName" class="form-control" placeholder="Enter plant name" required>
+                        <label for="plantId" class="form-label">Plant</label>
+                        <select id="plantId" name="plantId" class="form-select" required>
+                            @foreach (var plant in Model.Select(entry => entry.Plant).Distinct())
+                            {
+                                <option value="@plant.Id">@plant.Name</option>
+                            }
+                        </select>
                     </div>
 
                     <div class="mb-3">

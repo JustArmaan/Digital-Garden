@@ -36,7 +36,7 @@ namespace MVCView.Models
         }
         public void DeletePlant(int id)
         {
-            Plant plant = _plantList.FirstOrDefault(p => p.Id == id);
+            Plant? plant = _plantList.FirstOrDefault(p => p.Id == id);
             if (plant != null)
             {
                 _plantList.Remove(plant);
@@ -55,7 +55,7 @@ namespace MVCView.Models
                 existingPlant.ImageUrl = plant.ImageUrl;
                 existingPlant.CareInstructions = plant.CareInstructions;
             }
-            
+
         }
 
 
