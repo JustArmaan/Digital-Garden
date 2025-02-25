@@ -23,12 +23,21 @@
             <div class="list-group mb-4">
                 @foreach (var entry in Model)
                 {
-                    <div class="list-group-item d-flex align-items-center">
-                        <img src="@entry.Plant.ImageUrl" class="rounded me-3" width="60" height="60" alt="@entry.Plant.Name">
+                    <div class="list-group-item d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center">
+                            <img src="@entry.Plant.ImageUrl" class="rounded me-3" width="60" height="60" alt="@entry.Plant.Name">
+                            <div>
+                                <p class="fw-semibold mb-1">@entry.CareType @entry.Plant.Name</p>
+                                <small class="text-muted">@entry.Date.ToString("MMMM dd, yyyy - hh:mm tt")</small>
+                                <p class="text-muted">@entry.Notes</p>
+                            </div>
+                        </div>
                         <div>
-                            <p class="fw-semibold mb-1">@entry.CareType @entry.Plant.Name</p>
-                            <small class="text-muted">@entry.Date.ToString("MMMM dd, yyyy - hh:mm tt")</small>
-                            <p class="text-muted">@entry.Notes</p>
+                            <a href="@Url.Action("EditCareLog", "CareLog", new { id = entry.Id })" class="btn btn-warning btn-sm me-2">Edit</a>
+                            <form action="@Url.Action("Delete", "CareLog")" method="post" style="display:inline;">
+                                <input type="hidden" name="id" value="@entry.Id" />
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this entry?');">Delete</button>
+                            </form>
                         </div>
                     </div>
                 }
@@ -38,13 +47,8 @@
                 <h4 class="text-muted text-center">Add a New Care Entry</h4>
                 <form action="@Url.Action("AddCareLog", "CareLog")" method="POST">
                     <div class="mb-3">
-                        <label for="plantId" class="form-label">Plant</label>
-                        <select id="plantId" name="plantId" class="form-select" required>
-                            @foreach (var plant in Model.Select(entry => entry.Plant).Distinct())
-                            {
-                                <option value="@plant.Id">@plant.Name</option>
-                            }
-                        </select>
+                        <label for="plantName" class="form-label">Plant Name</label>
+                        <input type="text" id="plantName" name="plantName" class="form-control" placeholder="Enter plant name" required>
                     </div>
 
                     <div class="mb-3">

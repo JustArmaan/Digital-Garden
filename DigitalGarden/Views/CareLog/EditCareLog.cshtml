@@ -1,0 +1,54 @@
+@model MVCView.Models.CareLog
+
+@{
+    ViewData["Title"] = "Edit Care Log";
+}
+
+<div class="container py-5">
+    <div class="col-lg-6 mx-auto bg-white p-4 rounded shadow-sm">
+        <h2 class="text-success text-center fw-bold">🌿 Edit Care Log</h2>
+        <p class="text-center text-muted">Update your plant care entry below.</p>
+
+        <form asp-action="EditCareLog" asp-controller="CareLog" method="post">
+            <input type="hidden" asp-for="Id" />
+
+            <div class="mb-3">
+                <label asp-for="PlantId" class="form-label">Plant</label>
+                <select asp-for="PlantId" class="form-select" required>
+                    @foreach (var plant in ViewBag.Plants)
+                    {
+                        <option value="@plant.Id" selected="@(plant.Id == Model.PlantId ? "selected" : null)">
+                            @plant.Name
+                        </option>
+                    }
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="CareType" class="form-label">Care Type</label>
+                <select asp-for="CareType" class="form-select" required>
+                    <option value="Watered">Watered</option>
+                    <option value="Fertilized">Fertilized</option>
+                    <option value="Rotated">Rotated</option>
+                    <option value="Pruned">Pruned</option>
+                    <option value="Repotted">Repotted</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Notes" class="form-label">Notes</label>
+                <textarea asp-for="Notes" class="form-control" rows="3"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Date" class="form-label">Date</label>
+                <input asp-for="Date" type="datetime-local" class="form-control" required />
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-success">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>

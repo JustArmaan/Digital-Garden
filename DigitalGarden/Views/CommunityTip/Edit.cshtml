@@ -1,0 +1,46 @@
+@model MVCView.Models.CommunityTip
+
+@{
+    ViewData["Title"] = "Edit Tip";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Tip - Digital Garden</title>
+</head>
+<body class="bg-light">
+
+    <div class="container py-5">
+        <div class="col-lg-6 mx-auto bg-white p-4 rounded shadow-sm">
+            <h2 class="text-success text-center fw-bold">✏️ Edit Tip</h2>
+            <p class="text-center text-muted">Modify your gardening tip below.</p>
+
+            <form asp-action="Edit" method="POST">
+                <input type="hidden" asp-for="Id" />
+
+                <div class="mb-3">
+                    <label for="Title" class="form-label">Tip Title</label>
+                    <input type="text" asp-for="Title" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="Content" class="form-label">Tip Details</label>
+                    <textarea asp-for="Content" class="form-control" rows="3" required></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label for="SubmittedBy" class="form-label">Your Name</label>
+                    <input type="text" asp-for="SubmittedBy" class="form-control" required>
+                </div>
+
+                <button type="submit" class="btn btn-success w-100">Save Changes</button>
+                <a asp-action="Index" class="btn btn-secondary w-100 mt-2">Cancel</a>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>

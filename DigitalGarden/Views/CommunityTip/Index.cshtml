@@ -1,0 +1,66 @@
+@model IEnumerable<MVCView.Models.CommunityTip>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community Tips - Digital Garden</title>
+</head>
+<body class="bg-light">
+
+    <div class="container py-5">
+        <div class="col-lg-8 mx-auto bg-white p-4 rounded shadow-sm">
+            <h2 class="text-success text-center fw-bold">🌱 Community Garden Tips</h2>
+            <p class="text-center text-muted">Learn and share gardening tips with fellow plant lovers!</p>
+
+            <div class="list-group mb-4">
+                @foreach (var tip in Model)
+                {
+                    <div class="list-group-item">
+                        <h5 class="fw-semibold">💧 @tip.Title</h5>
+                        <p class="mb-1">@tip.Content</p>
+                        <small class="text-muted">Submitted by: @tip.SubmittedBy</small>
+
+                        <div class="d-flex justify-content-end mt-2">
+                            <a asp-action="Edit" asp-route-id="@tip.Id" class="btn btn-warning btn-sm me-2">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+
+                            <form action="@Url.Action("Delete", "CommunityTip")" method="post" style="display:inline;">
+                                <input type="hidden" name="id" value="@tip.Id" />
+                                <button type="submit" class="btn btn-danger btn-sm">
+                                    <i class="fas fa-trash-alt"></i> Delete
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div class="bg-light p-4 rounded">
+                <h4 class="text-muted text-center">Share Your Tip</h4>
+                <form asp-action="Create" method="POST">
+                    <div class="mb-3">
+                        <label for="Title" class="form-label">Tip Title</label>
+                        <input type="text" id="Title" name="Title" class="form-control" placeholder="Enter tip title" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="Content" class="form-label">Tip Details</label>
+                        <textarea id="Content" name="Content" class="form-control" rows="3" placeholder="Share your best gardening advice..." required></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="SubmittedBy" class="form-label">Your Name</label>
+                        <input type="text" id="SubmittedBy" name="SubmittedBy" class="form-control" placeholder="Enter your name" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100">Submit Tip</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -18,6 +18,7 @@ builder.Services.AddControllersWithViews();
 // for singleton services
 builder.Services.AddSingleton<IPlantRepository, MockPlantRepository>();
 builder.Services.AddSingleton<ICareLogRepository, MockCareLogRepository>();
+builder.Services.AddSingleton<ICommunityTipRepository, MockCommunityTipRepository>();
 
 var app = builder.Build();
 
