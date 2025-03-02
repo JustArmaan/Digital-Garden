@@ -1,0 +1,29 @@
+@model MVCView.Models.Profile
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Page</title>
+</head>
+<body class="bg-light">
+
+    <div class="container py-5">
+        <div class="col-md-6 mx-auto bg-white p-4 rounded shadow-sm text-center">
+            <h3 class="fw-bold">@Model.Name</h3>
+            <p class="text-muted">Loves Gardening</p>
+            <p class="text-secondary">@Model.Bio</p>
+
+            <ul class="list-group list-group-flush mb-3">
+                <li class="list-group-item"><strong>Email:</strong> @Model.Email</li>
+                <li class="list-group-item"><strong>Location:</strong> @Model.Location</li>
+                <li class="list-group-item"><strong>Joined:</strong> @Model.JoinedDate.ToString("MMMM yyyy")</li>
+            </ul>
+
+            <a href="@Url.Action("Edit", "Profile", new { id = Model.Id })" class="btn btn-success w-100">Edit Profile</a>
+        </div>
+    </div>
+
+</body>
+</html>
