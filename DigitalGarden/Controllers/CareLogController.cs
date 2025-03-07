@@ -1,4 +1,6 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using MVCView.Data;
 using MVCView.Models;
 
 namespace DigitalGarden.Controllers
@@ -14,25 +16,27 @@ namespace DigitalGarden.Controllers
             _plantRepository = plantRepository;
         }
 
-      public IActionResult Index()
+      public async Task<IActionResult> Index()
         {
-            var careLogs = _careLogRepository.GetCareLogs() ?? new List<CareLog>();
+                var plants = await _plantRepository.GetPlants();
+                ViewBag.Plants = plants;
+                var careLogs = await _careLogRepository.GetCareLogs();
             return View(careLogs);
         }
 
-        public IActionResult AddCareLog()
+        public async Task<IActionResult> AddCareLog()
         {
-            ViewBag.Plants = _plantRepository.GetPlants();
+            ViewBag.Plants = await _plantRepository.GetPlants();
             return View();
         }
 
         [HttpPost]
-        public IActionResult AddCareLog(int plantId, string careType, string notes, DateTime date)
+        public async Task<IActionResult> AddCareLog(int plantId, string careType, string notes, DateTime date)
         {
-            var plant = _plantRepository.GetPlant(plantId);
+            var plant = await _plantRepository.GetPlant(plantId);
             if (plant == null)
             {
-                ViewBag.Plants = _plantRepository.GetPlants();
+                ViewBag.Plants = await _plantRepository.GetPlants();
                 ModelState.AddModelError("", "Invalid plant selection.");
                 return View();
             }
@@ -46,44 +50,44 @@ namespace DigitalGarden.Controllers
                 Plant = plant
             };
 
-            _careLogRepository.AddCareLog(careLog);
+            await _careLogRepository.AddCareLog(careLog);
             return RedirectToAction("Index");
         }
 
 
 
-        public IActionResult EditCareLog(int id)
+        public async Task<IActionResult> EditCareLog(int id)
         {
-            var careLog = _careLogRepository.GetCareLog(id);
+            var careLog = await _careLogRepository.GetCareLog(id);
             if (careLog == null)
             {
                 return NotFound();
             }
-            ViewBag.Plants = _plantRepository.GetPlants();
+            ViewBag.Plants = await _plantRepository.GetPlants();
             return View(careLog);
         }
 
         [HttpPost]
-        public IActionResult EditCareLog(CareLog careLog)
+        public async Task<IActionResult> EditCareLog(CareLog careLog)
         {
             if (ModelState.IsValid)
             {
-                _careLogRepository.UpdateCareLog(careLog);
+                await _careLogRepository.UpdateCareLog(careLog);
                 return RedirectToAction("Index");
             }
-            ViewBag.Plants = _plantRepository.GetPlants();
+            ViewBag.Plants = await _plantRepository.GetPlants();
             return View(careLog);
         }
 
         [HttpPost]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var careLog = _careLogRepository.GetCareLog(id);
+            var careLog = await _careLogRepository.GetCareLog(id);
             if (careLog == null)
             {
                 return NotFound();
             }
-            _careLogRepository.DeleteCareLog(id);
+            await _careLogRepository.DeleteCareLog(id);
             return RedirectToAction("Index");
         }
     }

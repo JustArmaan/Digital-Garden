@@ -22,20 +22,21 @@
             <p class="lead">A simple way to organize your plants, keep track of their progress, and connect with fellow gardening enthusiasts.</p>
         </section>
 
-       <section class="row text-center my-5">
+        <section class="row text-center my-5">
             <div class="col-md-4">
-                <h3>🌱 Track Your Plants</h3>
+                <h3>🌱 <a asp-controller="MyPlant" asp-action="Index" class="text-dark text-decoration-none hover:text-decoration-underline">Track Your Plants</a></h3>
                 <p>Keep a record of watering schedules, sunlight exposure, and soil conditions to ensure your plants thrive.</p>
             </div>
             <div class="col-md-4">
-                <h3>📖 Care Log</h3>
+                <h3>📖 <a asp-controller="CareLog" asp-action="Index" class="text-dark text-decoration-none hover:text-decoration-underline">Care Log</a></h3>
                 <p>Document every step of your plant’s journey, from the first sprout to full bloom. Look back at your notes to learn what works best.</p>
             </div>
             <div class="col-md-4">
-                <h3>🌍 Community Tips</h3>
+                <h3>🌍 <a asp-controller="CommunityTip" asp-action="Index" class="text-dark text-decoration-none hover:text-decoration-underline">Community Tips</a></h3>
                 <p>Join a network of fellow plant lovers. Share insights, ask for advice, and discover new gardening techniques.</p>
             </div>
         </section>
     </div>
+
 </body>
 </html>

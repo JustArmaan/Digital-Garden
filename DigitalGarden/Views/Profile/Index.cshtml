@@ -21,7 +21,7 @@
                 <li class="list-group-item"><strong>Joined:</strong> @Model.JoinedDate.ToString("MMMM yyyy")</li>
             </ul>
 
-            <a href="@Url.Action("Edit", "Profile", new { id = Model.Id })" class="btn btn-success w-100">Edit Profile</a>
+            <a asp-action="Edit" asp-controller="Profile" asp-route-id="@Model.Id" class="btn btn-success w-100">Edit Profile</a>
         </div>
     </div>
 

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using DigitalGarden.Data;
 using MVCView.Models;
+using MVCView.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,11 +16,23 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 
-// for singleton services
-builder.Services.AddSingleton<IPlantRepository, MockPlantRepository>();
-builder.Services.AddSingleton<ICareLogRepository, MockCareLogRepository>();
-builder.Services.AddSingleton<ICommunityTipRepository, MockCommunityTipRepository>();
-builder.Services.AddSingleton<IProfileRepository, MockProfileRepository>();
+
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddSingleton<IPlantRepository, MockPlantRepository>();
+    builder.Services.AddSingleton<ICareLogRepository, MockCareLogRepository>();
+    builder.Services.AddSingleton<ICommunityTipRepository, MockCommunityTipRepository>();
+    builder.Services.AddSingleton<IProfileRepository, MockProfileRepository>();
+}
+else
+{
+    builder.Services.AddScoped<IPlantRepository, PlantRepository>();
+    builder.Services.AddScoped<ICareLogRepository, CareLogRepository>();
+    // builder.Services.AddScoped<ICommunityTipRepository, CommunityTipRepository>();
+    // builder.Services.AddScoped<IProfileRepository, ProfileRepository>();
+}
+
+
 
 var app = builder.Build();
 

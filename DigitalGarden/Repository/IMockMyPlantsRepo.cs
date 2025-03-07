@@ -1,4 +1,9 @@
-namespace MVCView.Models
+using MVCView.Models;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace MVCView.Data
 {
     public class MockPlantRepository : IPlantRepository
     {
@@ -19,30 +24,34 @@ namespace MVCView.Models
             };
         }
 
-        public IEnumerable<Plant> GetPlants()
+        public async Task<IEnumerable<Plant>> GetPlants()
         {
-            return _plantList;
+            return await Task.FromResult(_plantList);
         }
 
-        public Plant GetPlant(int id)
+        public async Task<Plant> GetPlant(int id)
         {
-            return _plantList.FirstOrDefault(p => p.Id == id)!;
+            return await Task.FromResult(_plantList.FirstOrDefault(p => p.Id == id)!);
         }
 
-        public void AddPlant(Plant plant)
+        public async Task AddPlant(Plant plant)
         {
             plant.Id = _plantList.Max(e => e.Id) + 1;
             _plantList.Add(plant);
+            await Task.CompletedTask;
         }
-        public void DeletePlant(int id)
+
+        public async Task DeletePlant(int id)
         {
-            Plant? plant = _plantList.FirstOrDefault(p => p.Id == id);
+            var plant = _plantList.FirstOrDefault(p => p.Id == id);
             if (plant != null)
             {
                 _plantList.Remove(plant);
             }
+            await Task.CompletedTask;
         }
-        public void UpdatePlant(Plant plant)
+
+        public async Task UpdatePlant(Plant plant)
         {
             var existingPlant = _plantList.FirstOrDefault(p => p.Id == plant.Id);
             if (existingPlant != null)
@@ -55,9 +64,7 @@ namespace MVCView.Models
                 existingPlant.ImageUrl = plant.ImageUrl;
                 existingPlant.CareInstructions = plant.CareInstructions;
             }
-
+            await Task.CompletedTask;
         }
-
-
     }
 }

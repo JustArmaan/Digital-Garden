@@ -13,25 +13,25 @@
     <div class="col-md-6 mx-auto bg-white p-4 rounded shadow-sm">
         <h3 class="fw-bold">Edit Profile</h3>
 
-        <form method="post" action="@Url.Action("Edit", "Profile", new { id = Model.Id })">
+        <form asp-action="Edit" asp-controller="Profile" asp-route-id="@Model.Id" method="post">
             <div class="mb-3">
                 <label for="Name" class="form-label">Name</label>
-                <input type="text" class="form-control" id="Name" name="Name" value="@Model.Name" required />
+                <input asp-for="Name" class="form-control" id="Name" required />
             </div>
 
             <div class="mb-3">
                 <label for="Email" class="form-label">Email</label>
-                <input type="email" class="form-control" id="Email" name="Email" value="@Model.Email" required />
+                <input asp-for="Email" class="form-control" id="Email" required />
             </div>
 
             <div class="mb-3">
                 <label for="Location" class="form-label">Location</label>
-                <input type="text" class="form-control" id="Location" name="Location" value="@Model.Location" />
+                <input asp-for="Location" class="form-control" id="Location" />
             </div>
 
             <div class="mb-3">
                 <label for="Bio" class="form-label">Bio</label>
-                <textarea class="form-control" id="Bio" name="Bio" rows="3">@Model.Bio</textarea>
+                <textarea asp-for="Bio" class="form-control" id="Bio" rows="3"></textarea>
             </div>
 
             <button type="submit" class="btn btn-success w-100">Save Changes</button>

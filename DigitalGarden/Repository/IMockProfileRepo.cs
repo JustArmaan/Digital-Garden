@@ -22,7 +22,7 @@ namespace MVCView.Models
 
         public Profile GetProfile(int id)
         {
-            return _profiles.FirstOrDefault(p => p.Id == id);
+            return _profiles.FirstOrDefault(p => p.Id == id)!;
         }
 
         public void UpdateProfile(Profile profile)

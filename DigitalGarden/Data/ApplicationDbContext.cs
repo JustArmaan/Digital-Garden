@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using MVCView.Models;
 
 namespace DigitalGarden.Data;
 
@@ -9,4 +10,6 @@ public class ApplicationDbContext : IdentityDbContext
         : base(options)
     {
     }
+    public DbSet<Plant> Plants { get; set; }
+    public DbSet<CareLog> CareLogs { get; set; }
 }

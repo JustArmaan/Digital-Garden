@@ -2,6 +2,7 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using DigitalGarden.Models;
 using MVCView.Models;
+using System.Threading.Tasks;
 
 namespace DigitalGarden.Controllers;
 
@@ -14,9 +15,9 @@ public class MyPlantController : Controller
         _plantRepository = plantRepository;
     }
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        var plants = _plantRepository.GetPlants();
+        var plants = await _plantRepository.GetPlants();
         return View(plants);
     }
     public IActionResult AddPlant()
@@ -45,15 +46,19 @@ public class MyPlantController : Controller
         return View(plant);
     }
 
-    public IActionResult EditPlant(int id)
+ public async Task<IActionResult> EditPlant(int id)
+{
+    var plants = await _plantRepository.GetPlants();
+    var plant = plants.FirstOrDefault(p => p.Id == id);
+
+    if (plant == null)
     {
-        var plant = _plantRepository.GetPlants().FirstOrDefault(p => p.Id == id);
-        if (plant == null)
-        {
-            return RedirectToAction("Index");
-        }
-        return View(plant);
+        return RedirectToAction("Index");
     }
+
+    return View(plant);
+}
+
 
     [HttpPost]
     public IActionResult EditPlant(Plant plant)
@@ -68,15 +73,15 @@ public class MyPlantController : Controller
 
 
     [HttpPost]
-    public IActionResult Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
-        var plant = _plantRepository.GetPlant(id);
+        var plant = await _plantRepository.GetPlant(id);
         if (plant == null)
         {
             return NotFound();
         }
 
-        _plantRepository.DeletePlant(id);
+        await _plantRepository.DeletePlant(id);
         return RedirectToAction("Index");
     }
 

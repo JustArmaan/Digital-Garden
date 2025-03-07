@@ -39,9 +39,9 @@
                                 Care Instructions: @plant.CareInstructions
                             </p>
                             <div class="d-flex justify-content-between">
-                                <a href="@Url.Action("EditPlant", "MyPlant", new { id = plant.Id })" class="btn btn-warning btn-sm">Edit</a>
+                                <a asp-action="EditPlant" asp-controller="MyPlant" asp-route-id="@plant.Id" class="btn btn-warning btn-sm">Edit</a>
 
-                               <form action="@Url.Action("Delete", "MyPlant", new { id = plant.Id })" method="post" style="display:inline;">
+                                <form asp-action="Delete" asp-controller="MyPlant" asp-route-id="@plant.Id" method="post" style="display:inline;">
                                     <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                                 </form>
                             </div>
@@ -52,7 +52,7 @@
         </div>
 
         <div class="text-center mt-4">
-            <a href="@Url.Action("AddPlant", "MyPlant")" class="btn btn-success">Add New Plant</a>
+            <a asp-action="AddPlant" asp-controller="MyPlant" class="btn btn-success">Add New Plant</a>
         </div>
     </section>
 </div>
