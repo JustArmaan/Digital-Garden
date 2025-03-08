@@ -23,9 +23,12 @@
                 {
                     <div class="list-group-item d-flex align-items-center justify-content-between">
                         <div class="d-flex align-items-center">
-                            <img src="@entry.Plant.ImageUrl" class="rounded me-3" width="60" height="60" alt="@entry.Plant.Name">
+                            @if (entry.Plant != null)
+                            {
+                                <img src="@entry.Plant.ImageUrl" class="rounded me-3" width="60" height="60" alt="@entry.Plant.Name">
+                            }
                             <div>
-                                <p class="fw-semibold mb-1">@entry.CareType @entry.Plant.Name</p>
+                                <p class="fw-semibold mb-1">@entry.CareType @(entry.Plant != null ? entry.Plant.Name : "Unknown Plant")</p>
                                 <small class="text-muted">@entry.Date.ToLocalTime().ToString("MMMM dd, yyyy - hh:mm tt")</small>
                                 <p class="text-muted">@entry.Notes</p>
                             </div>

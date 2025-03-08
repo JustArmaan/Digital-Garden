@@ -6,19 +6,54 @@ using MVCView.Data;
 using MVCView.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
+// # Create initial migration
+// dotnet ef migrations add InitialCreate
 
-// Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlite(connectionString));
+// # Apply migrations to the database
+// dotnet ef database update
+// Hardcode environment to Staging
+var environment = "Staging";
+
+// Explicitly load the configuration for the hardcoded environment
+builder.Configuration
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile($"appsettings.{environment}.json", optional: false, reloadOnChange: true)
+    .AddEnvironmentVariables();
+
+if (environment == "Staging" || environment == "Production")
+{
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
+        throw new InvalidOperationException($"Connection string 'DefaultConnection' not found in appsettings.{environment}.json");
+
+    // Log the connection string to verify it's correct (remove in production!)
+    Console.WriteLine($"Using connection string: {connectionString}");
+
+    builder.Services.AddDbContext<ApplicationDbContext>(options =>
+        options.UseSqlServer(connectionString));
+
+    Console.WriteLine($"Using SQL Server in {environment} environment");
+}
+else
+{
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
+        throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+
+    builder.Services.AddDbContext<ApplicationDbContext>(options =>
+        options.UseSqlite(connectionString));
+
+    Console.WriteLine("Using SQLite in Development environment");
+}
+
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
+
 builder.Services.AddControllersWithViews();
 
-
-if (builder.Environment.IsDevelopment())
+// Use the hardcoded environment for repository registration too
+if (environment == "Development")
 {
     builder.Services.AddSingleton<IPlantRepository, MockPlantRepository>();
     builder.Services.AddSingleton<ICareLogRepository, MockCareLogRepository>();
@@ -33,35 +68,29 @@ else
     builder.Services.AddScoped<IProfileRepository, ProfileRepository>();
 }
 
-
-
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+// Configure the HTTP request pipeline - use the hardcoded environment here too
+if (environment == "Development")
 {
     app.UseMigrationsEndPoint();
 }
 else
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
+
 app.UseRouting();
-
 app.UseAuthorization();
-
-app.MapStaticAssets();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
-    .WithStaticAssets();
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
-app.MapRazorPages()
-   .WithStaticAssets();
+app.MapRazorPages();
 
 app.Run();

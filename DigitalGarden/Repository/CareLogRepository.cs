@@ -28,14 +28,14 @@ namespace MVCView.Data
         public async Task<IEnumerable<CareLog>> GetCareLogs()
         {
             return await _context.CareLogs
-                                 .Include(c => c.Plant) // Include related plant data
+                                 .Include(c => c.Plant) 
                                  .ToListAsync();
         }
 
         public async Task<CareLog?> GetCareLog(int id)
         {
             return await _context.CareLogs
-                                 .Include(c => c.Plant) // Include related plant data
+                                 .Include(c => c.Plant)
                                  .FirstOrDefaultAsync(c => c.Id == id);
         }
 

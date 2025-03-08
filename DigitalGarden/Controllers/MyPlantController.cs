@@ -61,11 +61,11 @@ public class MyPlantController : Controller
 
 
     [HttpPost]
-    public IActionResult EditPlant(Plant plant)
+    public async Task<IActionResult> EditPlant(Plant plant)
     {
         if (ModelState.IsValid)
         {
-            _plantRepository.UpdatePlant(plant);
+            await _plantRepository.UpdatePlant(plant);
             return RedirectToAction("Index");
         }
         return View(plant);
