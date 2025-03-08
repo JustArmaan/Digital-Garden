@@ -16,13 +16,11 @@ namespace MVCView.Data
             _context = context;
         }
 
-        // Fetch all plants from the database
         public async Task<IEnumerable<Plant>> GetPlants()
         {
             return await _context.Plants.ToListAsync();
         }
 
-        // Fetch a single plant by its ID
         public async Task<Plant> GetPlant(int id)
         {
             var plant = await _context.Plants
@@ -36,14 +34,12 @@ namespace MVCView.Data
             return plant;
         }
 
-        // Add a new plant to the database
         public async Task AddPlant(Plant plant)
         {
             _context.Plants.Add(plant);
             await _context.SaveChangesAsync();
         }
 
-        // Delete a plant by its ID
         public async Task DeletePlant(int id)
         {
             var plant = await _context.Plants
@@ -56,7 +52,6 @@ namespace MVCView.Data
             }
         }
 
-        // Update an existing plant
         public async Task UpdatePlant(Plant plant)
         {
             var existingPlant = await _context.Plants

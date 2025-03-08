@@ -1,8 +1,12 @@
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
 namespace MVCView.Models
 {
     public class MockProfileRepository : IProfileRepository
     {
-        private List<Profile> _profiles;
+        private readonly List<Profile> _profiles;
 
         public MockProfileRepository()
         {
@@ -14,18 +18,19 @@ namespace MVCView.Models
             };
         }
 
-        public void AddProfile(Profile profile)
+        public async Task AddProfile(Profile profile)
         {
-            profile.Id = _profiles.Max(p => p.Id) + 1;
+            profile.Id = _profiles.Any() ? _profiles.Max(p => p.Id) + 1 : 1;
             _profiles.Add(profile);
+            await Task.CompletedTask;
         }
 
-        public Profile GetProfile(int id)
+        public async Task<Profile?> GetProfile(int id)
         {
-            return _profiles.FirstOrDefault(p => p.Id == id)!;
+            return await Task.FromResult(_profiles.FirstOrDefault(p => p.Id == id));
         }
 
-        public void UpdateProfile(Profile profile)
+        public async Task UpdateProfile(Profile profile)
         {
             var existingProfile = _profiles.FirstOrDefault(p => p.Id == profile.Id);
             if (existingProfile != null)
@@ -36,20 +41,22 @@ namespace MVCView.Models
                 existingProfile.Location = profile.Location;
                 existingProfile.JoinedDate = profile.JoinedDate;
             }
+            await Task.CompletedTask;
         }
 
-        public void DeleteProfile(int id)
+        public async Task DeleteProfile(int id)
         {
             var profile = _profiles.FirstOrDefault(p => p.Id == id);
             if (profile != null)
             {
                 _profiles.Remove(profile);
             }
+            await Task.CompletedTask;
         }
 
-        public IEnumerable<Profile> GetAllProfiles()
+        public async Task<IEnumerable<Profile>> GetAllProfiles()
         {
-            return _profiles;
+            return await Task.FromResult(_profiles);
         }
     }
 }

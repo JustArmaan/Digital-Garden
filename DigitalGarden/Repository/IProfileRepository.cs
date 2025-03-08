@@ -1,11 +1,14 @@
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
 namespace MVCView.Models
 {
     public interface IProfileRepository
     {
-        void AddProfile(Profile profile);
-        Profile GetProfile(int id);
-        void UpdateProfile(Profile profile);
-        void DeleteProfile(int id);
-        IEnumerable<Profile> GetAllProfiles();
+        Task AddProfile(Profile profile);
+        Task<Profile?> GetProfile(int id);
+        Task UpdateProfile(Profile profile);
+        Task DeleteProfile(int id);
+        Task<IEnumerable<Profile>> GetAllProfiles();
     }
 }

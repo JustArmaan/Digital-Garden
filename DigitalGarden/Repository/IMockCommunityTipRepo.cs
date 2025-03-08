@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using MVCView.Repositories;
 
 namespace MVCView.Models
 {
     public class MockCommunityTipRepository : ICommunityTipRepository
     {
-        private List<CommunityTip> _tips;
+        private readonly List<CommunityTip> _tips;
 
         public MockCommunityTipRepository()
         {
@@ -39,23 +41,24 @@ namespace MVCView.Models
             };
         }
 
-        public IEnumerable<CommunityTip> GetTips()
+        public Task<IEnumerable<CommunityTip>> GetTips()
         {
-            return _tips;
+            return Task.FromResult(_tips.AsEnumerable());
         }
 
-        public CommunityTip GetTip(int id)
+        public Task<CommunityTip?> GetTip(int id)
         {
-            return _tips.FirstOrDefault(t => t.Id == id);
+            return Task.FromResult(_tips.FirstOrDefault(t => t.Id == id));
         }
 
-        public void AddTip(CommunityTip tip)
+        public Task AddTip(CommunityTip tip)
         {
             tip.Id = _tips.Any() ? _tips.Max(t => t.Id) + 1 : 1;
             _tips.Add(tip);
+            return Task.CompletedTask;
         }
 
-        public void UpdateTip(CommunityTip tip)
+        public Task UpdateTip(CommunityTip tip)
         {
             var existingTip = _tips.FirstOrDefault(t => t.Id == tip.Id);
             if (existingTip != null)
@@ -65,15 +68,17 @@ namespace MVCView.Models
                 existingTip.SubmittedBy = tip.SubmittedBy;
                 existingTip.SubmittedDate = tip.SubmittedDate;
             }
+            return Task.CompletedTask;
         }
 
-        public void DeleteTip(int id)
+        public Task DeleteTip(int id)
         {
             var tip = _tips.FirstOrDefault(t => t.Id == id);
             if (tip != null)
             {
                 _tips.Remove(tip);
             }
+            return Task.CompletedTask;
         }
     }
 }

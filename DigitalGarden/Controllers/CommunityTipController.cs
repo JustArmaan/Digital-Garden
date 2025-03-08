@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MVCView.Models;
+using MVCView.Repositories;
+using System.Threading.Tasks;
 
 namespace MVCView.Controllers
 {
@@ -12,15 +14,15 @@ namespace MVCView.Controllers
             _communityTipRepository = communityTipRepository;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var tips = _communityTipRepository.GetTips();
+            var tips = await _communityTipRepository.GetTips();
             return View(tips);
         }
 
-        public IActionResult Details(int id)
+        public async Task<IActionResult> Details(int id)
         {
-            var tip = _communityTipRepository.GetTip(id);
+            var tip = await _communityTipRepository.GetTip(id);
             if (tip == null)
             {
                 return NotFound();
@@ -34,20 +36,20 @@ namespace MVCView.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([Bind("Title,Content,SubmittedBy")] CommunityTip tip)
+        public async Task<IActionResult> Create([Bind("Title,Content,SubmittedBy")] CommunityTip tip)
         {
             if (ModelState.IsValid)
             {
                 tip.SubmittedDate = DateTime.Now;
-                _communityTipRepository.AddTip(tip);
+                await _communityTipRepository.AddTip(tip);
                 return RedirectToAction(nameof(Index));
             }
             return View(tip);
         }
 
-        public IActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-            var tip = _communityTipRepository.GetTip(id);
+            var tip = await _communityTipRepository.GetTip(id);
             if (tip == null)
             {
                 return NotFound();
@@ -56,7 +58,7 @@ namespace MVCView.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit(int id, [Bind("Id,Title,Content,SubmittedBy,SubmittedDate")] CommunityTip tip)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Content,SubmittedBy,SubmittedDate")] CommunityTip tip)
         {
             if (id != tip.Id)
             {
@@ -65,15 +67,15 @@ namespace MVCView.Controllers
 
             if (ModelState.IsValid)
             {
-                _communityTipRepository.UpdateTip(tip);
+                await _communityTipRepository.UpdateTip(tip);
                 return RedirectToAction(nameof(Index));
             }
             return View(tip);
         }
 
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var tip = _communityTipRepository.GetTip(id);
+            var tip = await _communityTipRepository.GetTip(id);
             if (tip == null)
             {
                 return NotFound();
@@ -82,9 +84,9 @@ namespace MVCView.Controllers
         }
 
         [HttpPost, ActionName("Delete")]
-        public IActionResult DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            _communityTipRepository.DeleteTip(id);
+            await _communityTipRepository.DeleteTip(id);
             return RedirectToAction(nameof(Index));
         }
     }

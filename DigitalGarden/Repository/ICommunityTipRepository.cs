@@ -1,13 +1,16 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using MVCView.Models;
 
-namespace MVCView.Models
+namespace MVCView.Repositories
 {
-    public interface ICommunityTipRepository
-    {
-        IEnumerable<CommunityTip> GetTips();
-        CommunityTip GetTip(int id);
-        void AddTip(CommunityTip tip);
-        void UpdateTip(CommunityTip tip);
-        void DeleteTip(int id);
-    }
+public interface ICommunityTipRepository
+{
+    Task<IEnumerable<CommunityTip>> GetTips();
+    Task<CommunityTip?> GetTip(int id);
+    Task AddTip(CommunityTip tip);
+    Task UpdateTip(CommunityTip tip);
+    Task DeleteTip(int id);
+}
+
 }

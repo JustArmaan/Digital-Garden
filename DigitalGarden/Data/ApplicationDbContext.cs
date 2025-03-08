@@ -12,4 +12,6 @@ public class ApplicationDbContext : IdentityDbContext
     }
     public DbSet<Plant> Plants { get; set; }
     public DbSet<CareLog> CareLogs { get; set; }
+    public DbSet<CommunityTip> CommunityTips { get; set; }
+    public DbSet<Profile> Profiles { get; set; }
 }

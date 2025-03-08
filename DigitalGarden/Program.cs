@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using DigitalGarden.Data;
 using MVCView.Models;
 using MVCView.Data;
+using MVCView.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,8 +29,8 @@ else
 {
     builder.Services.AddScoped<IPlantRepository, PlantRepository>();
     builder.Services.AddScoped<ICareLogRepository, CareLogRepository>();
-    // builder.Services.AddScoped<ICommunityTipRepository, CommunityTipRepository>();
-    // builder.Services.AddScoped<IProfileRepository, ProfileRepository>();
+    builder.Services.AddScoped<ICommunityTipRepository, CommunityTipRepository>();
+    builder.Services.AddScoped<IProfileRepository, ProfileRepository>();
 }
 
 

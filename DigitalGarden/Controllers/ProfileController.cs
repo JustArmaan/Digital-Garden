@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MVCView.Models;
 
@@ -12,9 +13,9 @@ namespace MVCView.Controllers
             _profileRepository = profileRepository;
         }
 
-        public IActionResult Index(int id)
+        public async Task<IActionResult> Index(int id)
         {
-            var profile = _profileRepository.GetProfile(id);
+            var profile = await _profileRepository.GetProfile(id);
             if (profile == null)
             {
                 return NotFound();
@@ -22,9 +23,9 @@ namespace MVCView.Controllers
             return View(profile);
         }
 
-        public IActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-            var profile = _profileRepository.GetProfile(id);
+            var profile = await _profileRepository.GetProfile(id);
             if (profile == null)
             {
                 return NotFound();
@@ -43,9 +44,9 @@ namespace MVCView.Controllers
             return View(profile);
         }
 
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var profile = _profileRepository.GetProfile(id);
+            var profile = await _profileRepository.GetProfile(id);
             if (profile == null)
             {
                 return NotFound();
