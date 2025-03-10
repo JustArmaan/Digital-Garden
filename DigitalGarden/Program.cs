@@ -12,7 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 // # Apply migrations to the database
 // dotnet ef database update
 // Hardcode environment to Staging
-var environment = "Staging";
+var environment = "Production";
 
 // Explicitly load the configuration for the hardcoded environment
 builder.Configuration
