@@ -15,7 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 // # Apply migrations to the database
 // dotnet ef database update
 // Hardcode environment to Staging
-var environment = "Staging";
+var environment = "Production";
 
 // Explicitly load the configuration for the hardcoded environment
 builder.Configuration
@@ -38,7 +38,7 @@ if (environment == "Staging" || environment == "Production")
 
     Console.WriteLine($"Using SQL Server in {environment} environment");
 }
-else
+else // Development or Testing
 {
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
         throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
@@ -46,7 +46,7 @@ else
     builder.Services.AddDbContext<ApplicationDbContext>(options =>
         options.UseSqlite(connectionString));
 
-    Console.WriteLine("Using SQLite in Development environment");
+    Console.WriteLine($"Using SQLite in {environment} environment");
 }
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
@@ -60,12 +60,14 @@ builder.Services.AddControllersWithViews(options =>
 });
 
 
-if (environment == "Development")
+if (environment == "Development" || environment == "Testing")
 {
     builder.Services.AddSingleton<IPlantRepository, MockPlantRepository>();
     builder.Services.AddSingleton<ICareLogRepository, MockCareLogRepository>();
     builder.Services.AddSingleton<ICommunityTipRepository, MockCommunityTipRepository>();
     builder.Services.AddSingleton<IProfileRepository, MockProfileRepository>();
+
+    Console.WriteLine($"Using mock repositories in {environment} environment");
 }
 else
 {
@@ -73,15 +75,26 @@ else
     builder.Services.AddScoped<ICareLogRepository, CareLogRepository>();
     builder.Services.AddScoped<ICommunityTipRepository, CommunityTipRepository>();
     builder.Services.AddScoped<IProfileRepository, ProfileRepository>();
+
+    Console.WriteLine($"Using real repositories in {environment} environment");
 }
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline - use the hardcoded environment here too
-if (environment == "Development")
+// Configure the HTTP request pipeline
+if (environment == "Development" || environment == "Testing")
 {
     app.UseMigrationsEndPoint();
     app.UseDeveloperExceptionPage();
+
+    if (environment == "Testing")
+    {
+        app.Use(async (context, next) =>
+        {
+            context.Response.Headers.Append("X-Environment", "Testing");
+            await next();
+        });
+    }
 }
 else
 {
@@ -138,7 +151,7 @@ else
                 </head>
                 <body>
                     <div class='error-container'>
-                        <div class='plant-icon'>🌱</div>
+                        <div class='plant-icon'></div>
                         <h2>Oops! Something's Not Growing Right</h2>
                         <p>We're experiencing a temporary issue with our digital garden.</p>
                         <p>Our gardeners have been notified and are working to fix it. Please try again later.</p>
@@ -167,6 +180,13 @@ app.UseStatusCodePages(async context =>
             <h1>Page Not Found (404) - Development Environment</h1>
             <p>The requested URL " + context.HttpContext.Request.Path + @" was not found.</p>
             <p>Check your route configuration and ensure the controller and action exist.</p>");
+        }
+        else if (environment == "Testing")
+        {
+            await response.WriteAsync(@"
+            <h1>Page Not Found (404) - Testing Environment</h1>
+            <p>The requested URL " + context.HttpContext.Request.Path + @" was not found.</p>
+            <p>This is the testing environment - page not found.</p>");
         }
         else if (environment == "Staging")
         {
@@ -234,6 +254,12 @@ public class ExceptionFilterAttribute : Microsoft.AspNetCore.Mvc.Filters.IExcept
         if (_environment == "Development")
         {
             result.ViewData["ErrorTitle"] = "Development Error";
+            result.ViewData["ErrorMessage"] = context.Exception.Message;
+            result.ViewData["StackTrace"] = context.Exception.StackTrace;
+        }
+        else if (_environment == "Testing")
+        {
+            result.ViewData["ErrorTitle"] = "Testing Environment Error";
             result.ViewData["ErrorMessage"] = context.Exception.Message;
             result.ViewData["StackTrace"] = context.Exception.StackTrace;
         }
