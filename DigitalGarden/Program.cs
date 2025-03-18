@@ -7,6 +7,10 @@ using MVCView.Repositories;
 using Microsoft.AspNetCore.Diagnostics;
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
+using DigitalGarden.Models;
+using DigitalGarden.Services;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using DigitalGarden;
 
 var builder = WebApplication.CreateBuilder(args);
 // # Create initial migration
@@ -33,8 +37,10 @@ if (environment == "Staging" || environment == "Production")
     Console.WriteLine($"Using connection string: {connectionString}");
 
     builder.Services.AddDbContext<ApplicationDbContext>(options =>
-        options.UseSqlServer(connectionString, sqlOptions =>
-            sqlOptions.EnableRetryOnFailure(maxRetryCount: 5, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null)));
+        options.UseMySql(
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection"))
+    ));
 
     Console.WriteLine($"Using SQL Server in {environment} environment");
 }
@@ -49,16 +55,32 @@ else // Development or Testing
     Console.WriteLine($"Using SQLite in {environment} environment");
 }
 
+// builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>();
+
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+{
+    options.SignIn.RequireConfirmedAccount = false;
+
+    options.Password.RequiredLength = 10;
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequireNonAlphanumeric = true;
+
+    options.User.RequireUniqueEmail = true;
+})
+.AddEntityFrameworkStores<ApplicationDbContext>()
+.AddDefaultTokenProviders()
+.AddPasswordValidator<GardenPasswordValidator>();
 
 builder.Services.AddControllersWithViews(options =>
 {
     options.Filters.Add(new ExceptionFilterAttribute(environment));
 });
-
+builder.Services.AddTransient<IEmailSender, DummyEmailSender>();
+builder.Services.AddRazorPages();
 
 if (environment == "Development" || environment == "Testing")
 {
@@ -209,6 +231,7 @@ app.UseStatusCodePages(async context =>
             </head>
             <body>
                 <div class='error-container'>
+                     <h1>404</h1>
                     <h2>Page Not Found</h2>
                     <p>Sorry, the page you're looking for doesn't exist in our garden.</p>
                     <p><a href='/'>Return to Home Page</a></p>
@@ -223,6 +246,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
