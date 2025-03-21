@@ -25,26 +25,16 @@ public class MyPlantController : Controller
         return View();
     }
 
-    [HttpPost]
-    public IActionResult AddPlant(Plant plant)
+ [HttpPost]
+public async Task<IActionResult> AddPlant(Plant plant)
+{
+    if (ModelState.IsValid)
     {
-        if (ModelState.IsValid)
-        {
-                _plantRepository.AddPlant(new Plant
-                {
-                   Name = plant.Name,
-                    Species = plant.Species,
-                    WateringSchedule = plant.WateringSchedule,
-                    Sunlight = plant.Sunlight,
-                   Notes = plant.Notes,
-                  ImageUrl = plant.ImageUrl,
-                  CareInstructions = plant.CareInstructions
-                });
-
-                return RedirectToAction("Index");
-        }
-        return View(plant);
+        await _plantRepository.AddPlant(plant);
+        return RedirectToAction("Index");
     }
+    return View(plant);
+}
 
  public async Task<IActionResult> EditPlant(int id)
 {
