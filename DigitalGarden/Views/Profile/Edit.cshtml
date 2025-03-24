@@ -1,43 +1,71 @@
-@model MVCView.Models.Profile
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Profile</title>
-</head>
-<body class="bg-light">
+@model DigitalGarden.Models.ApplicationUser
 
 <div class="container py-5">
     <div class="col-md-6 mx-auto bg-white p-4 rounded shadow-sm">
         <h3 class="fw-bold">Edit Profile</h3>
 
-        <form asp-action="Edit" asp-controller="Profile" asp-route-id="@Model.Id" method="post">
+        <form asp-action="Edit" method="post">
+            <input type="hidden" asp-for="Id" />
+
             <div class="mb-3">
-                <label for="Name" class="form-label">Name</label>
-                <input asp-for="Name" class="form-control" id="Name" required />
+                <label asp-for="FirstName" class="form-label">First Name</label>
+                <input asp-for="FirstName" class="form-control" required />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
             </div>
 
             <div class="mb-3">
-                <label for="Email" class="form-label">Email</label>
-                <input asp-for="Email" class="form-control" id="Email" required />
+                <label asp-for="LastName" class="form-label">Last Name</label>
+                <input asp-for="LastName" class="form-control" required />
+                <span asp-validation-for="LastName" class="text-danger"></span>
             </div>
 
             <div class="mb-3">
-                <label for="Location" class="form-label">Location</label>
-                <input asp-for="Location" class="form-control" id="Location" />
+                <label asp-for="Email" class="form-label">Email</label>
+                <input asp-for="Email" class="form-control" readonly />
+                <span asp-validation-for="Email" class="text-danger"></span>
             </div>
 
             <div class="mb-3">
-                <label for="Bio" class="form-label">Bio</label>
-                <textarea asp-for="Bio" class="form-control" id="Bio" rows="3"></textarea>
+                <label asp-for="City" class="form-label">City</label>
+                <input asp-for="City" class="form-control" />
+                <span asp-validation-for="City" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="PostalCode" class="form-label">Postal Code</label>
+                <input asp-for="PostalCode" class="form-control" />
+                <span asp-validation-for="PostalCode" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Gender" class="form-label">Gender</label>
+                <select asp-for="Gender" class="form-select">
+                    <option value="">Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Non-Binary">Non-Binary</option>
+                    <option value="Prefer not to say">Prefer not to say</option>
+                </select>
+                <span asp-validation-for="Gender" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="GardeningExperience" class="form-label">Gardening Experience</label>
+                <select asp-for="GardeningExperience" class="form-select">
+                    <option value="Beginner">Beginner</option>
+                    <option value="Intermediate">Intermediate</option>
+                    <option value="Advanced">Advanced</option>
+                    <option value="Expert">Expert</option>
+                </select>
+                <span asp-validation-for="GardeningExperience" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3 form-check">
+                <input asp-for="IsGardener" class="form-check-input" type="checkbox" />
+                <label asp-for="IsGardener" class="form-check-label">I am a gardener</label>
             </div>
 
             <button type="submit" class="btn btn-success w-100">Save Changes</button>
         </form>
     </div>
 </div>
-
-</body>
-</html>
