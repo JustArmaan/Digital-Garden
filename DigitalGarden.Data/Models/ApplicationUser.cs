@@ -11,6 +11,7 @@ namespace DigitalGarden.Models
         public string? PostalCode { get; set; }
         public DateTime DateRegistered { get; set; } = DateTime.Now;
         public bool IsGardener { get; set; } = true;
-        public string GardeningExperienceLevel { get; set; } = "Beginner";
+        public string? GardeningExperience { get; set; }
+        public bool IsAdmin {get; set;} = false;
     }
 }

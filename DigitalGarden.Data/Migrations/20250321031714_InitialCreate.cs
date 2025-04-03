@@ -52,7 +52,7 @@ namespace DigitalGarden.Data.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     DateRegistered = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     IsGardener = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    GardeningExperienceLevel = table.Column<string>(type: "longtext", nullable: false)
+                    GardeningExperience = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     UserName = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),

@@ -26,7 +26,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         base.OnModelCreating(modelBuilder);
 
-        // Configure the Id column for IdentityRole to use VARCHAR(128)
         modelBuilder.Entity<IdentityRole>(entity =>
         {
             entity.Property(e => e.Id)
@@ -34,7 +33,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                 .HasColumnType("varchar(128)");
         });
 
-        // Configure the Id column for IdentityUser to use VARCHAR(128)
         modelBuilder.Entity<ApplicationUser>(entity =>
         {
             entity.Property(e => e.Id)
@@ -42,7 +40,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                 .HasColumnType("varchar(128)");
         });
 
-        // Configure the UserId column for AspNetUserTokens to use VARCHAR(128)
         modelBuilder.Entity<IdentityUserToken<string>>(entity =>
         {
             entity.Property(e => e.UserId)
@@ -50,7 +47,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                 .HasColumnType("varchar(128)");
         });
 
-        // Friend relationship (prevent cascading deletes)
         modelBuilder.Entity<Friend>()
             .HasOne(f => f.User)
             .WithMany()
@@ -63,14 +59,12 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .HasForeignKey(f => f.FriendId)
             .OnDelete(DeleteBehavior.Restrict);  // Restrict cascading deletes here
 
-        // Comment relationship: prevent cascading deletes on UserId in Comments
         modelBuilder.Entity<Comment>()
             .HasOne(c => c.User)
             .WithMany()
             .HasForeignKey(c => c.UserId)
             .OnDelete(DeleteBehavior.NoAction); // Prevent cascading deletes here
 
-        // Ensure any other foreign key relationships on UserId are handled correctly
         modelBuilder.Entity<Post>()
             .HasOne(p => p.User)
             .WithMany()

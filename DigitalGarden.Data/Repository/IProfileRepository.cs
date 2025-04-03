@@ -1,14 +1,17 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using DigitalGarden.Models;
 
 namespace MVCView.Models
 {
     public interface IProfileRepository
     {
-        Task AddProfile(Profile profile);
-        Task<Profile?> GetProfile(int id);
-        Task UpdateProfile(Profile profile);
-        Task DeleteProfile(int id);
-        Task<IEnumerable<Profile>> GetAllProfiles();
+            Task<ApplicationUser?> GetProfileByUserId(string userId);
+            Task<IEnumerable<ApplicationUser>> GetAllProfiles();
+            Task<ApplicationUser?> GetProfileById(string id);
+            Task AddProfile(ApplicationUser user);
+            Task UpdateProfile(ApplicationUser user);
+            Task DeleteProfile(string id);
+
     }
 }

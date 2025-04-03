@@ -34,7 +34,6 @@ namespace DigitalGarden.Services
                 });
             }
 
-            // Check for common garden-related words
             string[] gardenWords = { "plant", "garden", "flower", "seed", "soil", "water", "green" };
             foreach (var word in gardenWords)
             {

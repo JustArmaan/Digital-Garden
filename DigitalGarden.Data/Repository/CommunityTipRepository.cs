@@ -57,5 +57,19 @@ namespace MVCView.Repositories
                 await _context.SaveChangesAsync();
             }
         }
+
+        public async Task DeleteCommunityTip(int id)
+        {
+            var tip = await _context.CommunityTips.FindAsync(id);
+            if (tip != null)
+            {
+                _context.CommunityTips.Remove(tip);
+                await _context.SaveChangesAsync();
+            }
+        }
+        public async Task<IEnumerable<CommunityTip>> GetAllCommunityTips()
+        {
+            return await GetTips();
+        }
     }
 }

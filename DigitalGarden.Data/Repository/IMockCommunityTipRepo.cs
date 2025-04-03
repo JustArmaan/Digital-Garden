@@ -80,5 +80,18 @@ namespace MVCView.Models
             }
             return Task.CompletedTask;
         }
+          public Task<IEnumerable<CommunityTip>> GetAllCommunityTips()
+        {
+            return Task.FromResult(_tips.AsEnumerable());
+        }
+         public Task DeleteCommunityTip(int id)
+        {
+            var tip = _tips.FirstOrDefault(t => t.Id == id);
+            if (tip != null)
+            {
+                _tips.Remove(tip);
+            }
+            return Task.CompletedTask;
+        }
     }
 }

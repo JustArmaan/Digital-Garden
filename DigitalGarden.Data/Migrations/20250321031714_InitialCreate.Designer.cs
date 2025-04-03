@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DigitalGarden.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250320211515_InitialCreate")]
+    [Migration("20250321031714_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -53,7 +53,7 @@ namespace DigitalGarden.Data.Migrations
                     b.Property<string>("FirstName")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("GardeningExperienceLevel")
+                    b.Property<string>("GardeningExperience")
                         .IsRequired()
                         .HasColumnType("longtext");
 
