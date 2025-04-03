@@ -1,10 +1,12 @@
 using System.Threading.Tasks;
+using DigitalGarden.Filters;
 using Microsoft.AspNetCore.Mvc;
 using MVCView.Data;
 using MVCView.Models;
 
 namespace DigitalGarden.Controllers
 {
+    [VirtualDomFilter]
     public class CareLogController : Controller
     {
         private readonly ICareLogRepository _careLogRepository;

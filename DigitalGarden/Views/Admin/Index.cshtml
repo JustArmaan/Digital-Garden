@@ -1,0 +1,35 @@
+@model IEnumerable<DigitalGarden.Models.ApplicationUser>
+
+@{
+    ViewData["Title"] = "User Management";
+}
+
+<h1>User Management</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Joined</th>
+            <th>Experience</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.FirstName @user.LastName</td>
+                <td>@user.Email</td>
+                <td>@user.DateRegistered.ToString("MMM dd, yyyy")</td>
+                <td>@user.GardeningExperience</td>
+                <td>
+                    <a asp-action="UserDetails" asp-route-id="@user.Id" class="btn btn-info btn-sm">View</a>
+                    <a asp-action="EditUser" asp-route-id="@user.Id" class="btn btn-primary btn-sm">Edit</a>
+                    <a asp-action="DeleteUser" asp-route-id="@user.Id" class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

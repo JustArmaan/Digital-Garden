@@ -1,0 +1,36 @@
+@model IEnumerable<MVCView.Models.CommunityTip>
+
+@{
+    ViewData["Title"] = "Community Tips Management";
+}
+
+<h1>Community Tips Management</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Plant</th>
+            <th>Tip</th>
+            <th>Posted By</th>
+            <th>Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var tip in Model)
+        {
+            <tr>
+                <td>@tip.Title</td>
+                <td>@tip.Content</td>
+                <td>@tip.SubmittedBy</td>
+                <td>@tip.SubmittedDate</td>
+                <td>
+                    <form asp-action="DeleteCommunityTip" asp-route-id="@tip.Id" method="post"
+                          onsubmit="return confirm('Are you sure you want to delete this tip?');">
+                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

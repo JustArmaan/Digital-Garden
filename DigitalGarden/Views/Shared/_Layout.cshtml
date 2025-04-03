@@ -1,4 +1,10 @@
-﻿<!DOCTYPE html>
+﻿@{
+    bool isSpaRequest = Context.Items["IsSpaRequest"] as bool? ?? false;
+}
+
+@if (!isSpaRequest)
+{
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -7,81 +13,153 @@
 
     <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css" asp-append-version="true" id="bootstrap-local" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-        <link rel="stylesheet" href="~/DigitalGarden.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/DigitalGarden.styles.css" asp-append-version="true" />
 </head>
 <body>
-
-<header>
-   <nav class="navbar navbar-expand-lg navbar-dark bg-success">
-    <div class="container">
-        <a class="navbar-brand text-white" asp-area="" asp-controller="Home" asp-action="Index">
-            DigitalGarden
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white" asp-controller="MyPlant" asp-action="Index">My Plants</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white" asp-controller="MyPlant" asp-action="AddPlant">Add Plants</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white" asp-controller="CareLog" asp-action="Index">Care Log</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white" asp-area="" asp-controller="CommunityTip" asp-action="Index">Community Tips</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white" asp-controller="Profile" asp-action="Index" asp-route-id="1">Profile</a>
-                </li>
-            </ul>
+    <header>
+       <nav class="navbar navbar-expand-lg navbar-dark bg-success">
+        <div class="container">
+            <a class="navbar-brand text-white" href="/">
+                DigitalGarden
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link text-white spa-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                    </li>
+                  @if (User.Identity.IsAuthenticated)
+                  {
+                    <li class="nav-item">
+                        <a class="nav-link text-white spa-link" asp-controller="MyPlant" asp-action="Index">My Plants</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white spa-link" asp-controller="MyPlant" asp-action="AddPlant">Add Plants</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white spa-link" asp-controller="CareLog" asp-action="Index">Care Log</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white spa-link" asp-area="" asp-controller="CommunityTip" asp-action="Index">Community Tips</a>
+                    </li>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link text-white spa-link" asp-area="" asp-controller="Admin" asp-action="Index">Admin</a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link text-white spa-link" asp-controller="Profile" asp-action="Index" asp-route-id="1">Profile</a>
+                        </li>
+                    }
+                  }
+                </ul>
+            </div>
+        <partial name="_LoginPartial" />
         </div>
+       </nav>
+    </header>
+
+    <div class="container">
+        <main role="main" class="py-4 pb-5">
+            <div id="app">
+                @RenderBody()
+            </div>
+        </main>
     </div>
-                <partial name="_LoginPartial" />
-</nav>
-</header>
 
+    <footer class="border-top footer text-muted bg-light py-3 mt-3">
+        <div class="container text-center">
+            &copy; 2025 - DigitalGarden
+        </div>
+    </footer>
 
-<div class="container">
-    <main role="main" class="py-4 pb-5">
-        @RenderBody()
-    </main>
-</div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 
-<footer class="border-top footer text-muted bg-light py-3 mt-3">
-    <div class="container text-center">
-        &copy; 2025 - DigitalGarden
-    </div>
-</footer>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script>
+        if (typeof bootstrap === 'undefined') {
+            var bootstrapScript = document.createElement('script');
+            bootstrapScript.src = 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js';
+            bootstrapScript.onload = function() {
+                console.log('Bootstrap loaded from CDN.');
+            };
+            document.body.appendChild(bootstrapScript);
 
-<script>
-    if (typeof bootstrap === 'undefined') {
-        var bootstrapScript = document.createElement('script');
-        bootstrapScript.src = 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js';
-        bootstrapScript.onload = function() {
-            console.log('Bootstrap loaded from CDN.');
-        };
-        document.body.appendChild(bootstrapScript);
+            var bootstrapCSS = document.createElement('link');
+            bootstrapCSS.rel = 'stylesheet';
+            bootstrapCSS.href = 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css';
+            document.head.appendChild(bootstrapCSS);
+        } else {
+            console.log('Bootstrap loaded from local.');
+        }
+    </script>
 
-        var bootstrapCSS = document.createElement('link');
-        bootstrapCSS.rel = 'stylesheet';
-        bootstrapCSS.href = 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css';
-        document.head.appendChild(bootstrapCSS);
-    } else {
-        console.log('Bootstrap loaded from local.');
-    }
-</script>
+    <script src="https://unpkg.com/apprun@latest/dist/apprun.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/app.js" asp-append-version="true"></script>
 
-<script src="~/js/site.js" asp-append-version="true"></script>
-@await RenderSectionAsync("Scripts", required: false)
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.body.addEventListener('click', function(e) {
+                const link = e.target.closest('a.spa-link');
+                if (!link) return;
 
+                e.preventDefault();
+
+                const url = link.getAttribute('href');
+                if (!url) return;
+
+                history.pushState(null, '', url);
+
+                fetchContent(url);
+            });
+
+            window.addEventListener('popstate', function() {
+                fetchContent(window.location.pathname);
+            });
+
+            function fetchContent(url) {
+                fetch(url, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('app').innerHTML = html;
+
+                    const scripts = document.getElementById('app').querySelectorAll('script');
+                    scripts.forEach(script => {
+                        const newScript = document.createElement('script');
+                        if (script.src) {
+                            newScript.src = script.src;
+                        } else {
+                            newScript.textContent = script.textContent;
+                        }
+                        document.head.appendChild(newScript);
+                        document.head.removeChild(newScript);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error loading content:', error);
+                    window.location.href = url;
+                });
+            }
+        });
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+}
+else
+{
+    <div id="spa-content">
+        @RenderBody()
+    </div>
+}

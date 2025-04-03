@@ -1,0 +1,96 @@
+@model DigitalGarden.Models.ApplicationUser
+@using Microsoft.AspNetCore.Identity
+
+@{
+    ViewData["Title"] = "Edit User";
+    var userRoles = ViewBag.UserRoles as IList<string>;
+    var allRoles = ViewBag.AllRoles as IList<IdentityRole>;
+}
+
+<h1>Edit User</h1>
+<hr />
+
+<form asp-action="EditUser" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="Id" />
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="FirstName" class="control-label"></label>
+                <input asp-for="FirstName" class="form-control" />
+                <span asp-v
+    using Microsoft.AspNetCore.Identity;
+           </div>
+
+            <div class="form-group">
+                <label asp-for="LastName" class="control-label"></label>
+                <input asp-for="LastName" class="form-control" />
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Gender" class="control-label"></label>
+                <select asp-for="Gender" class="form-control">
+                    <option value="">Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                    <option value="Prefer not to say">Prefer not to say</option>
+                </select>
+                <span asp-validation-for="Gender" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="City" class="control-label"></label>
+                <input asp-for="City" class="form-control" />
+                <span asp-validation-for="City" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="GardeningExperience" class="control-label"></label>
+                <select asp-for="GardeningExperience" class="form-control">
+                    <option value="Beginner">Beginner</option>
+                    <option value="Intermediate">Intermediate</option>
+                    <option value="Advanced">Advanced</option>
+                    <option value="Expert">Expert</option>
+                </select>
+                <span asp-validation-for="GardeningExperience" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">Roles</label>
+                <div>
+                    @foreach (var role in allRoles)
+                    {
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input"
+                                   id="role-@role.Name"
+                                   name="selectedRoles"
+                                   value="@role.Name"
+                                   @(userRoles.Contains(role.Name) ? "checked" : "") />
+                            <label class="form-check-label" for="role-@role.Name">@role.Name</label>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group mt-3">
+        <input type="submit" value="Save" class="btn btn-primary" />
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    </div>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

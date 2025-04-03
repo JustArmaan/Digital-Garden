@@ -4,10 +4,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using DigitalGarden.Models;
 using MVCView.Models;
+using DigitalGarden.Filters;
 
 namespace MVCView.Controllers
 {
     [Authorize]
+    [VirtualDomFilter]
     public class ProfileController : Controller
     {
         private readonly IProfileRepository _profileRepository;

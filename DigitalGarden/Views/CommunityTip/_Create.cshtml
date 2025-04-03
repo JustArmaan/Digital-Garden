@@ -1,0 +1,23 @@
+@model MVCView.Models.CommunityTip
+
+<div id="create-form-container" class="bg-light p-4 rounded">
+    <h4 class="text-muted text-center">Share Your Tip</h4>
+    <form id="create-tip-form">
+        <div class="mb-3">
+            <label for="Title" class="form-label">Tip Title</label>
+            <input type="text" id="Title" name="Title" class="form-control" placeholder="Enter tip title" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="Content" class="form-label">Tip Details</label>
+            <textarea id="Content" name="Content" class="form-control" rows="3" placeholder="Share your best gardening advice..." required></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label for="SubmittedBy" class="form-label">Your Name</label>
+            <input type="text" id="SubmittedBy" name="SubmittedBy" class="form-control" placeholder="Enter your name" required>
+        </div>
+
+        <button type="submit" class="btn btn-success w-100">Submit Tip</button>
+    </form>
+</div>

@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Community Tips - Digital Garden</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body class="bg-light">
 
@@ -14,53 +15,141 @@
             <h2 class="text-success text-center fw-bold">🌱 Community Garden Tips</h2>
             <p class="text-center text-muted">Learn and share gardening tips with fellow plant lovers!</p>
 
-            <div class="list-group mb-4">
-                @foreach (var tip in Model)
-                {
-                    <div class="list-group-item">
-                        <h5 class="fw-semibold">💧 @tip.Title</h5>
-                        <p class="mb-1">@tip.Content</p>
-                        <small class="text-muted">Submitted by: @tip.SubmittedBy</small>
+            <div id="content-container">
+                <div id="tips-list-container">
+                    @await Html.PartialAsync("_TipsList", Model)
+                </div>
 
-                        <div class="d-flex justify-content-end mt-2">
-                            <a asp-action="Edit" asp-route-id="@tip.Id" class="btn btn-warning btn-sm me-2">
-                                <i class="fas fa-edit"></i> Edit
-                            </a>
-
-                            <form action="@Url.Action("Delete", "CommunityTip")" method="post" style="display:inline;">
-                                <input type="hidden" name="id" value="@tip.Id" />
-                                <button type="submit" class="btn btn-danger btn-sm">
-                                    <i class="fas fa-trash-alt"></i> Delete
-                                </button>
-                            </form>
+                <div id="create-form-container" class="bg-light p-4 rounded">
+                    <h4 class="text-muted text-center">Share Your Tip</h4>
+                    <form id="create-tip-form">
+                        <div class="mb-3">
+                            <label for="Title" class="form-label">Tip Title</label>
+                            <input type="text" id="Title" name="Title" class="form-control" placeholder="Enter tip title" required>
                         </div>
-                    </div>
-                }
-            </div>
 
-            <div class="bg-light p-4 rounded">
-                <h4 class="text-muted text-center">Share Your Tip</h4>
-                <form asp-action="Create" method="POST">
-                    <div class="mb-3">
-                        <label for="Title" class="form-label">Tip Title</label>
-                        <input type="text" id="Title" name="Title" class="form-control" placeholder="Enter tip title" required>
-                    </div>
+                        <div class="mb-3">
+                            <label for="Content" class="form-label">Tip Details</label>
+                            <textarea id="Content" name="Content" class="form-control" rows="3" placeholder="Share your best gardening advice..." required></textarea>
+                        </div>
 
-                    <div class="mb-3">
-                        <label for="Content" class="form-label">Tip Details</label>
-                        <textarea id="Content" name="Content" class="form-control" rows="3" placeholder="Share your best gardening advice..." required></textarea>
-                    </div>
+                        <div class="mb-3">
+                            <label for="SubmittedBy" class="form-label">Your Name</label>
+                            <input type="text" id="SubmittedBy" name="SubmittedBy" class="form-control" placeholder="Enter your name" required>
+                        </div>
 
-                    <div class="mb-3">
-                        <label for="SubmittedBy" class="form-label">Your Name</label>
-                        <input type="text" id="SubmittedBy" name="SubmittedBy" class="form-control" placeholder="Enter your name" required>
-                    </div>
-
-                    <button type="submit" class="btn btn-success w-100">Submit Tip</button>
-                </form>
+                        <button type="submit" class="btn btn-success w-100">Submit Tip</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
+
+    <script>
+        $(document).ready(function () {
+            $(document).on('submit', '#create-tip-form', function (e) {
+                e.preventDefault();
+
+                $.ajax({
+                    url: '@Url.Action("Create", "CommunityTip")',
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    success: function (result) {
+                        $('#tips-list-container').html(result);
+                        $('#create-tip-form').trigger('reset');
+                    }
+                });
+            });
+
+            $(document).on('click', '.edit-tip', function () {
+                var tipId = $(this).data('id');
+
+                $.ajax({
+                    url: '@Url.Action("Edit", "CommunityTip")/' + tipId,
+                    type: 'GET',
+                    success: function (result) {
+                        $('#content-container').html(result);
+                    }
+                });
+            });
+
+            $(document).on('submit', '#edit-tip-form', function (e) {
+                e.preventDefault();
+                var tipId = $('#Id').val();
+
+                $.ajax({
+                    url: '@Url.Action("Edit", "CommunityTip")/' + tipId,
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    success: function (result) {
+                        refreshPage();
+                    }
+                });
+            });
+
+            $(document).on('click', '.view-tip', function () {
+                var tipId = $(this).data('id');
+
+                $.ajax({
+                    url: '@Url.Action("Details", "CommunityTip")/' + tipId,
+                    type: 'GET',
+                    success: function (result) {
+                        $('#content-container').html(result);
+                    }
+                });
+            });
+
+            $(document).on('click', '.delete-tip', function () {
+                var tipId = $(this).data('id');
+
+                $.ajax({
+                    url: '@Url.Action("Delete", "CommunityTip")/' + tipId,
+                    type: 'GET',
+                    success: function (result) {
+                        $('#content-container').html(result);
+                    }
+                });
+            });
+
+            $(document).on('submit', '#confirm-delete-form', function (e) {
+                e.preventDefault();
+                var tipId = $('#Id').val();
+
+                $.ajax({
+                    url: '@Url.Action("Delete", "CommunityTip")/' + tipId,
+                    type: 'POST',
+                    success: function (result) {
+                        refreshPage();
+                    }
+                });
+            });
+
+            $(document).on('click', '#cancel-edit, #cancel-delete, #back-to-list', function () {
+                refreshPage();
+            });
+
+            function refreshPage() {
+                $.ajax({
+                    url: '@Url.Action("GetTipsList", "CommunityTip")',
+                    type: 'GET',
+                    success: function (result) {
+                        $('#content-container').html('');
+
+                        $('#content-container').append('<div id="tips-list-container"></div>');
+                        $('#tips-list-container').html(result);
+
+                        $.ajax({
+                            url: '@Url.Action("Create", "CommunityTip")',
+                            type: 'GET',
+                            success: function (createForm) {
+                                $('#content-container').append(createForm);
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    </script>
 
 </body>
 </html>

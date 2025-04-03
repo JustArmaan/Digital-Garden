@@ -22,6 +22,8 @@
 <div class="container mt-4 mb-4">
     <h1 class="text-center">@ViewData["Title"]</h1>
 
+    @await Component.InvokeAsync("WateringReminder")
+
     <section class="my-5">
         <h2>Your Plants</h2>
         <p class="lead">Here’s a list of all your plants. You can view details, edit, or remove them.</p>
@@ -56,6 +58,3 @@
         </div>
     </section>
 </div>
-
-</body>
-</html>

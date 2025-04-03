@@ -1,0 +1,24 @@
+@model IEnumerable<MVCView.Models.Plant>
+
+<div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
+    @foreach (var plant in Model)
+    {
+        <div class="col">
+            <div class="card shadow-sm border-light">
+                <img src="@plant.ImageUrl" class="card-img-top img-fluid" alt="Plant Image">
+                <div class="card-body">
+                    <h5 class="card-title">@plant.Name</h5>
+                    <p class="card-text">
+                        Last Watered: @plant.LastWatered.ToString("yyyy-MM-dd") <br>
+                        Care Instructions: @plant.CareInstructions
+                    </p>
+                    <div class="d-flex justify-content-between">
+                        <button class="btn btn-primary btn-sm view-details" data-id="@plant.Id">View Details</button>
+                        <a asp-action="EditPlant" asp-controller="MyPlant" asp-route-id="@plant.Id" class="btn btn-warning btn-sm">Edit</a>
+                        <button class="btn btn-danger btn-sm delete-plant" data-id="@plant.Id">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

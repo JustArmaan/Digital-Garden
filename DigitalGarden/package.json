@@ -11,6 +11,7 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "apprun": "^3.33.9",
     "bootstrap": "^5.3.3"
   }
 }

@@ -2,9 +2,12 @@ using Microsoft.AspNetCore.Mvc;
 using MVCView.Models;
 using MVCView.Repositories;
 using System.Threading.Tasks;
+using DigitalGarden.Filters;
+using System;
 
 namespace MVCView.Controllers
 {
+    [VirtualDomFilter]
     public class CommunityTipController : Controller
     {
         private readonly ICommunityTipRepository _communityTipRepository;
@@ -20,6 +23,12 @@ namespace MVCView.Controllers
             return View(tips);
         }
 
+        public async Task<IActionResult> GetTipsList()
+        {
+            var tips = await _communityTipRepository.GetTips();
+            return PartialView("_TipsList", tips);
+        }
+
         public async Task<IActionResult> Details(int id)
         {
             var tip = await _communityTipRepository.GetTip(id);
@@ -27,11 +36,22 @@ namespace MVCView.Controllers
             {
                 return NotFound();
             }
+
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                return PartialView("_Details", tip);
+            }
+
             return View(tip);
         }
 
         public IActionResult Create()
         {
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                return PartialView("_Create");
+            }
+
             return View();
         }
 
@@ -42,8 +62,21 @@ namespace MVCView.Controllers
             {
                 tip.SubmittedDate = DateTime.Now;
                 await _communityTipRepository.AddTip(tip);
+
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                {
+                    var tips = await _communityTipRepository.GetTips();
+                    return PartialView("_TipsList", tips);
+                }
+
                 return RedirectToAction(nameof(Index));
             }
+
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                return PartialView("_Create", tip);
+            }
+
             return View(tip);
         }
 
@@ -54,6 +87,12 @@ namespace MVCView.Controllers
             {
                 return NotFound();
             }
+
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                return PartialView("_Edit", tip);
+            }
+
             return View(tip);
         }
 
@@ -68,8 +107,21 @@ namespace MVCView.Controllers
             if (ModelState.IsValid)
             {
                 await _communityTipRepository.UpdateTip(tip);
+
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                {
+                    var tips = await _communityTipRepository.GetTips();
+                    return PartialView("_TipsList", tips);
+                }
+
                 return RedirectToAction(nameof(Index));
             }
+
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                return PartialView("_Edit", tip);
+            }
+
             return View(tip);
         }
 
@@ -80,6 +132,12 @@ namespace MVCView.Controllers
             {
                 return NotFound();
             }
+
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                return PartialView("_Delete", tip);
+            }
+
             return View(tip);
         }
 
@@ -87,6 +145,13 @@ namespace MVCView.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             await _communityTipRepository.DeleteTip(id);
+
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                var tips = await _communityTipRepository.GetTips();
+                return PartialView("_TipsList", tips);
+            }
+
             return RedirectToAction(nameof(Index));
         }
     }

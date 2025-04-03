@@ -1,0 +1,46 @@
+@model DigitalGarden.Models.ApplicationUser
+
+@{
+    ViewData["Title"] = "User Details";
+}
+
+<h1>User Details</h1>
+
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-3">Email</dt>
+        <dd class="col-sm-9">@Model.Email</dd>
+
+        <dt class="col-sm-3">Name</dt>
+        <dd class="col-sm-9">@Model.FirstName @Model.LastName</dd>
+
+        <dt class="col-sm-3">Joined</dt>
+        <dd class="col-sm-9">@Model.DateRegistered.ToString("MMM dd, yyyy")</dd>
+
+        <dt class="col-sm-3">Experience</dt>
+        <dd class="col-sm-9">@Model.GardeningExperience</dd>
+
+        <dt class="col-sm-3">Gender</dt>
+        <dd class="col-sm-9">@Model.Gender</dd>
+
+        <dt class="col-sm-3">City</dt>
+        <dd class="col-sm-9">@Model.City</dd>
+
+        <dt class="col-sm-3">Roles</dt>
+        <dd class="col-sm-9">
+            @if (ViewBag.Roles != null && ViewBag.Roles.Count > 0)
+            {
+                @string.Join(", ", ViewBag.Roles)
+            }
+            else
+            {
+                <span>No roles assigned</span>
+            }
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="EditUser" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</div>

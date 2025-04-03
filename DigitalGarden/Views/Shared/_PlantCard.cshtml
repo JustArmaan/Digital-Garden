@@ -1,0 +1,32 @@
+@model MVCView.Models.Plant
+
+<style>
+.card {
+    height: 100%;
+}
+
+.card-body {
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+</style>
+
+    <div class="card shadow-sm border-light">
+    <img src="@Model.ImageUrl" class="card-img-top img-fluid" alt="Plant Image">
+    <div class="card-body">
+        <h5 class="card-title">@Model.Name</h5>
+        <p class="card-text">
+            Last Watered: @Model.LastWatered.ToString("yyyy-MM-dd") <br>
+            Care Instructions: @Model.CareInstructions
+        </p>
+        <div class="d-flex justify-content-between">
+            <a asp-action="EditPlant" asp-controller="MyPlant" asp-route-id="@Model.Id" class="btn btn-warning btn-sm">Edit</a>
+
+            <form asp-action="Delete" asp-controller="MyPlant" asp-route-id="@Model.Id" method="post" style="display:inline;">
+                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+            </form>
+        </div>
+    </div>
+</div>

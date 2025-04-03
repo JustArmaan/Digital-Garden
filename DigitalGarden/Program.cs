@@ -11,6 +11,7 @@ using DigitalGarden.Models;
 using DigitalGarden.Services;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using DigitalGarden;
+using DigitalGarden.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 // # Create initial migration
@@ -75,12 +76,30 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 .AddDefaultTokenProviders()
 .AddPasswordValidator<GardenPasswordValidator>();
 
+builder.Services.AddAuthentication()
+    .AddGoogle(options =>
+    {
+        options.ClientId = builder.Configuration["Authentication:Google:ClientId"]
+            ?? throw new InvalidOperationException("Google ClientId is not configured.");
+        options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"]
+            ?? throw new InvalidOperationException("Google ClientSecret is not configured.");
+        options.CallbackPath = "/signin-google";
+    });
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"));
+    options.AddPolicy("RequireUserRole", policy => policy.RequireRole("User"));
+});
+
 builder.Services.AddControllersWithViews(options =>
 {
     options.Filters.Add(new ExceptionFilterAttribute(environment));
+    options.Filters.Add(new VirtualDomFilterAttribute());
 });
 builder.Services.AddTransient<IEmailSender, DummyEmailSender>();
 builder.Services.AddRazorPages();
+builder.Services.AddScoped<SeedService>();
 
 if (environment == "Development" || environment == "Testing")
 {
@@ -254,6 +273,23 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.MapRazorPages();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var seedService = services.GetRequiredService<SeedService>();
+    await seedService.SeedRolesAndAdminAsync();
+}
+
+
+// builder.Services.AddControllersWithViews(options =>
+// {
+//     // Add global authorize filter
+//     options.Filters.Add(new AuthorizeFilter());
+
+//     // Keep your existing ExceptionFilterAttribute
+//     options.Filters.Add(new ExceptionFilterAttribute(environment));
+// });
 
 app.Run();
 
