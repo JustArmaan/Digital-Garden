@@ -13,11 +13,11 @@
 
   <ItemGroup>
     <!-- Updated to work with Pomelo (EF Core 8.x.x) -->
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="9.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.13" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.13" /> <!-- Updated to 8.0.13 -->
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.13" />
-    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="9.0.3" /> <!-- Updated to 8.0.13 -->
+    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="8.0.0" /> <!-- Updated to 8.0.0 -->
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.13" /> <!-- Updated to 8.0.13 -->
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.13">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
