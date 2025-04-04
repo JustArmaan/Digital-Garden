@@ -14,25 +14,26 @@ jobs:
         steps:
             - uses: actions/checkout@v4
 
-            - name: Setup .NET 9 Preview
-              run: |
-                  wget https://dot.net/v1/dotnet-install.sh -O dotnet-install.sh
-                  chmod +x dotnet-install.sh
-                  ./dotnet-install.sh --version 9.0.0-preview.3.24167.7 --install-dir $HOME/.dotnet
-                  echo "$HOME/.dotnet" >> $GITHUB_PATH
-                  echo "DOTNET_ROOT=$HOME/.dotnet" >> $GITHUB_ENV
+            - name: Set up .NET Core
+              uses: actions/setup-dotnet@v3
+              with:
+                  dotnet-version: "8.x"
+                  include-prerelease: true
+
+            - name: Restore dependencies
+              run: dotnet restore
 
             - name: Build with dotnet
               run: dotnet build --configuration Release
 
             - name: dotnet publish
-              run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+              run: dotnet publish -c Release -o ./publish
 
             - name: Upload artifact for deployment job
               uses: actions/upload-artifact@v4
               with:
                   name: .net-app
-                  path: ${{env.DOTNET_ROOT}}/myapp
+                  path: ./publish
 
     deploy:
         runs-on: ubuntu-latest
@@ -43,7 +44,7 @@ jobs:
 
         steps:
             - name: Download artifact from build job
-              uses: actions/download-artifact@v4
+              uses: actions/download-artifact@v4 # Updated to v4
               with:
                   name: .net-app
 
@@ -54,4 +55,4 @@ jobs:
                   app-name: "digitalGarden"
                   slot-name: "Production"
                   publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-                  package: .
+                  package: ./publish
