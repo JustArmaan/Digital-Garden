@@ -26,7 +26,7 @@ var environment = "Production";
 builder.Configuration
     .SetBasePath(Directory.GetCurrentDirectory())
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-    .AddJsonFile($"appsettings.{environment}.json", optional: false, reloadOnChange: true)
+    .AddJsonFile($"appsettings.{environment}.json", optional: true, reloadOnChange: true)
     .AddEnvironmentVariables();
 
 if (environment == "Staging" || environment == "Production")
@@ -38,10 +38,7 @@ if (environment == "Staging" || environment == "Production")
     Console.WriteLine($"Using connection string: {connectionString}");
 
     builder.Services.AddDbContext<ApplicationDbContext>(options =>
-        options.UseMySql(
-        builder.Configuration.GetConnectionString("DefaultConnection"),
-        ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection"))
-    ));
+        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
     Console.WriteLine($"Using SQL Server in {environment} environment");
 }
@@ -76,15 +73,17 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 .AddDefaultTokenProviders()
 .AddPasswordValidator<GardenPasswordValidator>();
 
-builder.Services.AddAuthentication()
-    .AddGoogle(options =>
-    {
-        options.ClientId = builder.Configuration["Authentication:Google:ClientId"]
-            ?? throw new InvalidOperationException("Google ClientId is not configured.");
-        options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"]
-            ?? throw new InvalidOperationException("Google ClientSecret is not configured.");
-        options.CallbackPath = "/signin-google";
-    });
+if (!string.IsNullOrEmpty(builder.Configuration["Authentication:Google:ClientId"]) &&
+    !string.IsNullOrEmpty(builder.Configuration["Authentication:Google:ClientSecret"]))
+{
+    builder.Services.AddAuthentication()
+        .AddGoogle(options =>
+        {
+            options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+            options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+            options.CallbackPath = "/signin-google";
+        });
+}
 
 builder.Services.AddAuthorization(options =>
 {

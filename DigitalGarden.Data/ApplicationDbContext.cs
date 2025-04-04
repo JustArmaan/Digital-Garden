@@ -2,13 +2,17 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using MVCView.Models;
 
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+    private readonly IConfiguration _configuration;
+
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IConfiguration configuration)
         : base(options)
     {
+        _configuration = configuration;
     }
 
     public DbSet<Plant> Plants { get; set; }
@@ -21,7 +25,22 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Friend> Friends { get; set; }
     public DbSet<Post> Posts { get; set; }
     public DbSet<Comment> Comments { get; set; }
-
+  protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        if (!optionsBuilder.IsConfigured)
+        {
+            optionsBuilder.UseSqlServer(
+                _configuration.GetConnectionString("DefaultConnection"),
+                sqlServerOptionsAction: sqlOptions =>
+                {
+                    sqlOptions.EnableRetryOnFailure(
+                        maxRetryCount: 5, // Number of retries before failing
+                        maxRetryDelay: TimeSpan.FromSeconds(10), // Delay between retries
+                        errorNumbersToAdd: null // Use default Azure SQL transient errors
+                    );
+                });
+        }
+    }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
