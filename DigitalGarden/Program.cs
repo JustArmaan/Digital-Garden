@@ -14,46 +14,50 @@ using DigitalGarden;
 using DigitalGarden.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
-// # Create initial migration
-// dotnet ef migrations add InitialCreate
 
-// # Apply migrations to the database
-// dotnet ef database update
-// Hardcode environment to Staging
-var environment = "Production";
+var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production";
+Console.WriteLine($"Current environment: {environment}");
 
-// Explicitly load the configuration for the hardcoded environment
 builder.Configuration
     .SetBasePath(Directory.GetCurrentDirectory())
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
     .AddJsonFile($"appsettings.{environment}.json", optional: true, reloadOnChange: true)
-    .AddEnvironmentVariables();
+    .AddEnvironmentVariables()
+    .AddUserSecrets<Program>(optional: true);
 
-if (environment == "Staging" || environment == "Production")
+string connectionString;
+
+var envConnectionString = Environment.GetEnvironmentVariable("AZURE_SQL_CONNECTIONSTRING");
+
+if (!string.IsNullOrEmpty(envConnectionString))
 {
-    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
-        throw new InvalidOperationException($"Connection string 'DefaultConnection' not found in appsettings.{environment}.json");
-
-    // Log the connection string to verify it's correct (remove in production!)
-    Console.WriteLine($"Using connection string: {connectionString}");
-
-    builder.Services.AddDbContext<ApplicationDbContext>(options =>
-        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-    Console.WriteLine($"Using SQL Server in {environment} environment");
+    connectionString = envConnectionString;
+    Console.WriteLine("Using connection string from environment variable");
 }
-else // Development or Testing
+else
 {
-    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
+    // Fall back to connection string from configuration
+    connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
         throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+    Console.WriteLine("Using connection string from configuration");
+}
 
+Console.WriteLine($"Connection string configured for {environment} environment");
+
+if (environment == "Development" || environment == "Testing")
+{
     builder.Services.AddDbContext<ApplicationDbContext>(options =>
         options.UseSqlite(connectionString));
 
     Console.WriteLine($"Using SQLite in {environment} environment");
 }
+else
+{
+    builder.Services.AddDbContext<ApplicationDbContext>(options =>
+        options.UseSqlServer(connectionString));
 
-// builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>();
+    Console.WriteLine($"Using SQL Server in {environment} environment");
+}
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -191,7 +195,7 @@ else
                 </head>
                 <body>
                     <div class='error-container'>
-                        <div class='plant-icon'></div>
+                        <div class='plant-icon'>🌱</div>
                         <h2>Oops! Something's Not Growing Right</h2>
                         <p>We're experiencing a temporary issue with our digital garden.</p>
                         <p>Our gardeners have been notified and are working to fix it. Please try again later.</p>
@@ -279,16 +283,6 @@ using (var scope = app.Services.CreateScope())
     var seedService = services.GetRequiredService<SeedService>();
     await seedService.SeedRolesAndAdminAsync();
 }
-
-
-// builder.Services.AddControllersWithViews(options =>
-// {
-//     // Add global authorize filter
-//     options.Filters.Add(new AuthorizeFilter());
-
-//     // Keep your existing ExceptionFilterAttribute
-//     options.Filters.Add(new ExceptionFilterAttribute(environment));
-// });
 
 app.Run();
 
